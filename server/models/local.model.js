@@ -86,6 +86,60 @@ const local = sequelize.define('local',{
                 msg: "El RUC debe tener exactamente 13 caracteres"
             }
         }
+    },
+    latitud : {
+        type: DataTypes.DECIMAL(10, 8),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "La latitud es requerida" },
+            isDecimal: {
+                args: true,
+                msg: "La latitud debe ser un valor decimal"
+            },
+            min: {
+                args: [-90],
+                msg: "La latitud debe ser mayor o igual a -90"
+            },
+            max: {
+                args: [90],
+                msg: "La latitud debe ser menor o igual a 90"
+            }
+        }
+    },
+    longitud : {
+        type: DataTypes.DECIMAL(11, 8),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "La longitud es requerida" },
+            isDecimal: {
+                args: true,
+                msg: "La longitud debe ser un valor decimal"
+            },
+            min: {
+                args: [-180],
+                msg: "La longitud debe ser mayor o igual a -180"
+            },
+            max: {
+                args: [180],
+                msg: "La longitud debe ser menor o igual a 180"
+            }
+        }
+    },
+    logo : {
+        type : DataTypes.STRING(100),
+        allowNull: false,
+    },
+    portada : {
+        type : DataTypes.STRING(100),
+        allowNull: false,
+    },
+    //relacion de uno a mucho con categoria
+    id_categoria : {
+        type : DataTypes.INTEGER,
+        allowNull : false,
+        validate : {
+            notNull :{msg : "El id de categoria del local es requerido"}
+        }
     }
 
 });

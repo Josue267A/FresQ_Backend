@@ -19,7 +19,7 @@ const pack = sequelize.define('pack',{
     precio : {
         type: DataTypes.DECIMAL,
         allowNull :{
-            notNull : {msg : "el precio es requerido"}
+            notNull : {msg : "El precio es requerido"}
         }
     },
     descripcion : {
