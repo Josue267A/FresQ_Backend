@@ -15,5 +15,5 @@ const cliente = sequelize.define('cliente',{
         validate :{ 
             notNull : {msg : "la edad es requerido"}
         }
-    },
+    }
 })

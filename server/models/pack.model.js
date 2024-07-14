@@ -13,7 +13,7 @@ const pack = sequelize.define('pack',{
         type: DataTypes.DATE,
         allowNull : false,
         validate: {
-            notNull :{msg : "la fecha de creacion es requerido"}
+            notNull :{msg : "La fecha de creacion es requerido"}
         }
     },
     precio : {
