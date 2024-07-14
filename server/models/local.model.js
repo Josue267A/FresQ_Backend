@@ -1,9 +1,12 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const categoria = require('../models/categoria.model');
+const pack = require('../models/pack.model');
+const { FOREIGNKEYS } = require('sequelize/lib/query-types');
 
 const local = sequelize.define('local',{
     correoElectronico : {
-        type : DataTypes.STRING,
+        type : DataTypes.STRING(50),
         allowNull : false,
         validate : {
             notNull :{msg : "El correo electronico es requerido"},
@@ -19,14 +22,14 @@ const local = sequelize.define('local',{
         }
     },
     nombreLocal : {
-        type : DataTypes.STRING,
+        type : DataTypes.STRING(50),
         allowNull : false,
         validate : {
             notNull :{msg : "El nombre del local es requerido"}
         }
     },
     numeroTelefono : {
-        type : DataTypes.STRING,
+        type : DataTypes.STRING(10),
         allowNull : false,
         validate : {
             notNull : {msg : "El numero de telefono es requerido"},
@@ -73,8 +76,9 @@ const local = sequelize.define('local',{
         }
     },
     ruc : {
-        type: DataTypes.STRING,
+        type: DataTypes.CHAR(10),
         allowNull: false,
+        unique :true,
         validate: {
             notNull: { msg: "El RUC es requerido" },
             isNumeric: {
@@ -88,7 +92,7 @@ const local = sequelize.define('local',{
         }
     },
     latitud : {
-        type: DataTypes.DECIMAL(10, 8),
+        type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
             notNull: { msg: "La latitud es requerida" },
@@ -107,7 +111,7 @@ const local = sequelize.define('local',{
         }
     },
     longitud : {
-        type: DataTypes.DECIMAL(11, 8),
+        type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
             notNull: { msg: "La longitud es requerida" },
@@ -132,15 +136,13 @@ const local = sequelize.define('local',{
     portada : {
         type : DataTypes.STRING(100),
         allowNull: false,
-    },
-    //relacion de uno a mucho con categoria
-    id_categoria : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-        validate : {
-            notNull :{msg : "El id de categoria del local es requerido"}
-        }
     }
+    
 
 });
+//relacion de uno a mucho con categoria
+local.belongsTo(categoria,{foreignKey: 'id_categoria',onDelete:'CASCADE'});
+categoria.hasMany(local,{foreignKey:'id_categoria'});
+local.hasMany(pack,{foreignKey:'idLocal',onDelete:'CASCADE'});
+
 module.exports = local;

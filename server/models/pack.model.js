@@ -1,5 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const local = require('../models/local.model');
+const reseña = require('../models/reseña.model');
+const Pedido = require('../models/pedido.model');
 
 const pack = sequelize.define('pack',{
     nombre:{
@@ -10,14 +13,18 @@ const pack = sequelize.define('pack',{
         }
     },
     fechaCreacion:{
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull : false,
         validate: {
-            notNull :{msg : "La fecha de creacion es requerido"}
+            notNull :{msg : "La fecha de creacion es requerido"},
+            isDate: {
+                args: true,
+                msg: "La fecha debe ser válida"
+            }
         }
     },
     precio : {
-        type: DataTypes.DECIMAL,
+        type: DataTypes.DECIMAL(18,2),
         allowNull :{
             notNull : {msg : "El precio es requerido"}
         }
@@ -33,14 +40,22 @@ const pack = sequelize.define('pack',{
         type: DataTypes.TIME,
         allowNull : false,
         validate: {
-            notNull : {msg : "la hora de inicio es requerido"}
+            notNull : {msg : "la hora de inicio es requerido"},
+            is: {
+                args: /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                msg: "La hora debe estar en el formato HH:MM"
+            }
         }
     },
     horaFin: {
         type : DataTypes.TIME,
         allowNull : false,
         validate: {
-            notNull : {msg : "la hora de fin es requerido"}
+            notNull : {msg : "la hora de fin es requerido"},
+            is: {
+                args: /^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$/,
+                msg: "La hora debe estar en el formato HH:MM"
+            }
         }
     },
     multipleDays: {
@@ -52,22 +67,36 @@ const pack = sequelize.define('pack',{
         defaultValue: 0
     },
     fechaInicio: {
-        type: DataTypes.DATE,
+        type: DataTypes.DATEONLY,
         allowNull: false,
         validate :{
-            notNull : {msg : "la fecha de inicio es requerido"}
+            notNull : {msg : "la fecha de inicio es requerido"},
+            isDate: {
+                args: true,
+                msg: "La fecha debe ser válida"
+            }
+            
         }
     },
-    idLocal : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-        validate : {
-            notNull : {msg : "El local es requerido"}
-        }
-    },
-    activo : {
+    //id_local foreanea
+    estado : {
         type : DataTypes.BOOLEAN,
         defaultValue: true
+    },
+    mostrar : {
+        type : DataTypes.BOOLEAN,
+        defaultValue : true
     }
+});
+pack.belongsTo(local,{foreignKey: 'idLocal', onDelete :'CASCADE'});
+// relacion de uno a muchos con resena
+pack.hasMany(reseña,{foreignKey: 'id_pack',onDelete : 'CASCADE'});
+// Relación uno a muchos con Pedido
+pack.hasMany(Pedido, {
+    foreignKey: {
+        name: 'id_pack',
+        allowNull: false
+    },
+    onDelete: 'CASCADE'
 });
 module.exports = pack;

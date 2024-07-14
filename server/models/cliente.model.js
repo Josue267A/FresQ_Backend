@@ -1,17 +1,19 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const Pedido = require ('../models/pedido.model')
 
 const cliente = sequelize.define('cliente',{
     nombre: {
-        type: DataTypes.STRING,
+        type: DataTypes.STRING(50),
         allowNull : false,
         validate : {
             notNull : {msg : "El nombre es requerido"}
         }
     },
     correo : {
-        type : DataTypes.STRING,
+        type : DataTypes.STRING(50),
         allowNull : false,
+        unique:true,
         validate : {
             notNull :{msg : "El correo electronico es requerido"},
             isEmail :{
@@ -26,7 +28,7 @@ const cliente = sequelize.define('cliente',{
         }
     },
     telefono : {
-        type : DataTypes.STRING,
+        type : DataTypes.CHAR(10),
         allowNull : false,
         validate : {
             notNull : {msg : "El numero de telefono es requerido"},
@@ -40,8 +42,8 @@ const cliente = sequelize.define('cliente',{
             }
         }
     },
-    contraseña : {
-        type: DataTypes.STRING,
+    contrasenia : {
+        type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
             notNull: { msg: "La contraseña es requerida" },
@@ -57,8 +59,8 @@ const cliente = sequelize.define('cliente',{
             }
         }
     },
-    genero : {
-        type : DataTypes.INTEGER,
+    sexo : {
+        type : DataTypes.CHAR(1),
         allowNull : false,
         validate :{
             notNull : {msg : "el genero es requerido"}
@@ -72,7 +74,7 @@ const cliente = sequelize.define('cliente',{
         }
     },
     latitud : {
-        type: DataTypes.DECIMAL(10, 8),
+        type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
             notNull: { msg: "La latitud es requerida" },
@@ -91,7 +93,7 @@ const cliente = sequelize.define('cliente',{
         }
     },
     longitud : {
-        type: DataTypes.DECIMAL(11, 8),
+        type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
             notNull: { msg: "La longitud es requerida" },
@@ -109,4 +111,14 @@ const cliente = sequelize.define('cliente',{
             }
         }
     }
-})
+});
+
+// Relación uno a muchos con Pedido
+cliente.hasMany(Pedido, {
+    foreignKey: {
+        name: 'id_cliente',
+        allowNull: false
+    },
+    onDelete: 'CASCADE'
+});
+module.exports = cliente;
