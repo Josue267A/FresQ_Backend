@@ -58,25 +58,11 @@ const pack = sequelize.define('pack',{
             notNull : {msg : "la fecha de inicio es requerido"}
         }
     },
-    generp : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-        validate :{
-            notNull : {msg : "el genero es requerido"}
-        }
-    },
-    edad : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-        validate :{ 
-            notNull : {msg : "la edad es requerido"}
-        }
-    },
     idLocal : {
         type : DataTypes.INTEGER,
         allowNull : false,
         validate : {
-            notNull : {msg : "el local es requerido"}
+            notNull : {msg : "El local es requerido"}
         }
     },
     activo : {

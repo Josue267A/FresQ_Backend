@@ -88,4 +88,5 @@ const local = sequelize.define('local',{
         }
     }
 
-})
+});
+module.exports = local;
