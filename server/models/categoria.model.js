@@ -11,5 +11,5 @@ const categoria = sequelize.define('categoria',{
     
 });
 //relacion de uno a muchos con local 
-categoria.belongsTo(local);
+//categoria.belongsTo(local);
 module.exports = categoria;
