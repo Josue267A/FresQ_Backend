@@ -1,8 +1,8 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const local = require('../models/local.model')
+const Local = require('./local.model');
 
-const categoria = sequelize.define('categoria',{
+const Categoria = sequelize.define('categoria',{
 
     nombre : {
         type : DataTypes.STRING(100),
@@ -11,5 +11,7 @@ const categoria = sequelize.define('categoria',{
     
 });
 //relacion de uno a muchos con local 
-//categoria.belongsTo(local);
-module.exports = categoria;
+Categoria.hasMany(Local,{foreignKey:'idCategorias'});
+Local.belongsTo(Categoria);
+
+module.exports = Categoria;

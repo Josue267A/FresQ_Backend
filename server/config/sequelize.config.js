@@ -1,7 +1,7 @@
 const { Sequelize} = require('sequelize');
 const username = 'root'; //cambiar al nombre de la base de datos 
 const password = 'dani'; // cambiar a la contrasenia correspondiente
-const bdd_name = 'PruebaBackend';
+const bdd_name = 'PruebaBackendNuevo';
 const hostName = 'localhost';
 
 const initialSequelize = new Sequelize(`mysql://${username}:${password}@localhost`);
