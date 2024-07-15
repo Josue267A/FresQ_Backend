@@ -1,10 +1,17 @@
 const { validationResult } = require('express-validator');
 const Local = require('../models/local.model');
+const Categoria = require('../models/categoria.model');
+const Pack = require('../models/pack.model');
 
 // Obtener todos los locales
 exports.getLocales = async (req, res) => {
     try {
-        const locales = await Local.findAll();
+        const locales = await Local.findAll({
+            include: [
+                { model: Categoria, as: 'categoria' },
+                { model: Pack, as: 'packs' }
+            ]
+        });
         res.json(locales);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los locales', error });
@@ -14,7 +21,12 @@ exports.getLocales = async (req, res) => {
 // Obtener un local por ID
 exports.getLocalById = async (req, res) => {
     try {
-        const local = await Local.findByPk(req.params.id);
+        const local = await Local.findByPk(req.params.id, {
+            include: [
+                { model: Categoria, as: 'categoria' },
+                { model: Pack, as: 'packs' }
+            ]
+        });
         if (!local) {
             return res.status(404).json({ message: 'Local no encontrado' });
         }
