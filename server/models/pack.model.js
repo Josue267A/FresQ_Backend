@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
 const local = require('../models/local.model');
-const reseña = require('../models/reseña.model');
+const reseña = require('./resenia.model');
 const Pedido = require('../models/pedido.model');
 
 const pack = sequelize.define('pack',{
