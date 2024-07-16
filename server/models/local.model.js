@@ -1,7 +1,7 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
 
-
+const cliente = require('../models/cliente.model')
 const local = sequelize.define('local',{
     correoElectronico : {
         type : DataTypes.STRING(50),

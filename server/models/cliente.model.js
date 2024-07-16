@@ -115,6 +115,7 @@ const cliente = sequelize.define('cliente',{
         }
     }
 });
-
+cliente.hasMany(pedido,{foreignKey:'idCliente'});
+pedido.belongsTo(cliente);
 
 module.exports = cliente;

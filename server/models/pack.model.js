@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
 //const local = require('../models/local.model');
-//const reseña = require('./resenia.model');
+const reseña = require('./resenia.model');
 const pedido = require('../models/pedido.model');
 
 const pack = sequelize.define('pack',{
@@ -89,4 +89,9 @@ const pack = sequelize.define('pack',{
     }
 });
 
+pack.hasMany(pedido,{foreignKey:'idPack'});
+pedido.belongsTo(pack);
+
+pack.hasMany(reseña,{foreignKey:'idPack'});
+reseña.belongsTo(pack);
 module.exports = pack;

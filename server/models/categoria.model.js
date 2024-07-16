@@ -12,6 +12,6 @@ const categoria = sequelize.define('categoria',{
 });
 //relacion de uno a muchos con local 
 //categoria.belongsTo(local);
-categoria.hasMany(local,{foreignKey: 'idCatego'});
+categoria.hasMany(local,{foreignKey: 'idCategoria'});
 local.belongsTo(categoria);
 module.exports = categoria;
