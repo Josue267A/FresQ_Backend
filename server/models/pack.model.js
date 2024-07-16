@@ -90,8 +90,8 @@ const pack = sequelize.define('pack',{
 });
 
 pack.hasMany(pedido,{foreignKey:'idPack'});
-pedido.belongsTo(pack);
+pedido.belongsTo(pack,{foreignKey:'idPack'});
 
 pack.hasMany(reseña,{foreignKey:'idPack'});
-reseña.belongsTo(pack);
+reseña.belongsTo(pack,{foreignKey:'idPack'});
 module.exports = pack;
