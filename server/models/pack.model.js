@@ -88,6 +88,7 @@ const pack = sequelize.define('pack',{
         defaultValue : true
     }
 });
+/*
 pack.belongsTo(local,{foreignKey: 'idLocal', onDelete :'CASCADE'});
 // relacion de uno a muchos con resena
 pack.hasMany(reseña,{foreignKey: 'id_pack',onDelete : 'CASCADE'});
@@ -99,4 +100,5 @@ pack.hasMany(Pedido, {
     },
     onDelete: 'CASCADE'
 });
+*/
 module.exports = pack;
