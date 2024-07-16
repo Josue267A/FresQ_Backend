@@ -79,5 +79,5 @@ Cliente.hasMany(pedido, {
 pedido.belongsTo(Cliente, {
     foreignKey: 'id_cliente',
     allowNull: false
-});
-module.exports = pedido;*/
+});*/
+module.exports = pedido;
