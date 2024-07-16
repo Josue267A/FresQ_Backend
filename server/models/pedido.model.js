@@ -1,9 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const Pack = require ('../models/pack.model');
-const Cliente = require ('../models/cliente.model');
 
-const pedido = sequelize.define('pedido',{
+const Pedido = sequelize.define('pedido',{
     codigo : {
         type : DataTypes.CHAR(5),
         allowNull : false,
@@ -55,7 +53,7 @@ const pedido = sequelize.define('pedido',{
 });
 
 // Relación uno a muchos con Pack
-/*Pack.hasMany(pedido, {
+Pack.hasMany(pedido, {
     foreignKey: {
         name: 'id_pack',
         allowNull: false
@@ -69,7 +67,7 @@ pedido.belongsTo(Pack, {
 });
 
 // Relación uno a muchos con Cliente
-/*Cliente.hasMany(pedido, {
+Cliente.hasMany(pedido, {
     foreignKey: {
         name: 'id_cliente',
         allowNull: false
@@ -80,6 +78,6 @@ pedido.belongsTo(Pack, {
 pedido.belongsTo(Cliente, {
     foreignKey: 'id_cliente',
     allowNull: false
-});*/
+});
 
 module.exports = pedido;
