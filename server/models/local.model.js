@@ -1,8 +1,8 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const categoria = require ('./categoria.model');
-const pack = require ('./pack.model');
-
+const categoria = require('../models/categoria.model');
+const pack = require('../models/pack.model');
+const { FOREIGNKEYS } = require('sequelize/lib/query-types');
 
 const local = sequelize.define('local',{
     correoElectronico : {
@@ -141,9 +141,8 @@ const local = sequelize.define('local',{
 
 });
 //relacion de uno a mucho con categoria
-/*
 local.belongsTo(categoria,{foreignKey: 'id_categoria',onDelete:'CASCADE'});
 categoria.hasMany(local,{foreignKey:'id_categoria'});
 local.hasMany(pack,{foreignKey:'idLocal',onDelete:'CASCADE'});
-*/
+
 module.exports = local;

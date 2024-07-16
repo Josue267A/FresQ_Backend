@@ -9,7 +9,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 const allEnrollmentRoutes = require('../FresQ_Backend/server/routes/local.routes');
 //const allUserRoutes = require('./server/routes/user.routes.js');
-//allUserRoutes(app);
+allUserRoutes(app);
 allEnrollmentRoutes(app);
 app.listen(port, () => {
 console.log("Server listening at port", port);
