@@ -1,9 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const Pedido = require ('./pedido.model');
+const Pedido = require ('../models/pedido.model')
 
-
-const Cliente = sequelize.define('cliente',{
+const cliente = sequelize.define('cliente',{
     nombre: {
         type: DataTypes.STRING(50),
         allowNull : false,
@@ -114,8 +113,12 @@ const Cliente = sequelize.define('cliente',{
     }
 });
 
-// Relación uno a muchos con Pedido
-Cliente.hasMany(Pedido,{foreignKey:'idCliente'});
-Pedido.belongsTo(Cliente);
-
+/*// Relación uno a muchos con Pedido
+cliente.hasMany(Pedido, {
+    foreignKey: {
+        name: 'id_cliente',
+        allowNull: false
+    },
+    onDelete: 'CASCADE'
+});*/
 module.exports = cliente;

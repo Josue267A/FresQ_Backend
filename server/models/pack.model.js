@@ -1,8 +1,10 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const local = require('../models/local.model');
+const reseña = require('./resenia.model');
+const Pedido = require('../models/pedido.model');
 
-
-const Pack = sequelize.define('pack',{
+const pack = sequelize.define('pack',{
     nombre:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -76,7 +78,7 @@ const Pack = sequelize.define('pack',{
             
         }
     },
-    
+    //id_local foreanea
     estado : {
         type : DataTypes.BOOLEAN,
         defaultValue: true
@@ -86,5 +88,15 @@ const Pack = sequelize.define('pack',{
         defaultValue : true
     }
 });
-
-module.exports = Pack;
+/*pack.belongsTo(local,{foreignKey: 'idLocal', onDelete :'CASCADE'});
+// relacion de uno a muchos con resena
+pack.hasMany(reseña,{foreignKey: 'id_pack',onDelete : 'CASCADE'});
+// Relación uno a muchos con Pedido
+pack.hasMany(Pedido, {
+    foreignKey: {
+        name: 'id_pack',
+        allowNull: false
+    },
+    onDelete: 'CASCADE'
+});*/
+module.exports = pack;

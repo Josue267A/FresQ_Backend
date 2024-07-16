@@ -1,7 +1,8 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const pack = require('./pack.model');
 
-const Resenia = sequelize.define('resenia',{
+const resenia = sequelize.define('resenia',{
     comentario : {
         type : DataTypes.STRING,
         allowNull : false
@@ -10,6 +11,6 @@ const Resenia = sequelize.define('resenia',{
         type : DataTypes.INTEGER(1,5)
     }
 });
-reseña.belongsTo(pack,{foreignKey:'id_pack',onDelete:'CASCADE'});
+//resenia.belongsTo(pack,{foreignKey:'id_pack',onDelete:'CASCADE'});
 
-module.exports = Resenia;
+module.exports = resenia;
