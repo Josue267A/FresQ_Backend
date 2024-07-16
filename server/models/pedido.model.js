@@ -53,7 +53,7 @@ const pedido = sequelize.define('pedido',{
     
 
 });
-
+/*
 // Relación uno a muchos con Pack
 Pack.hasMany(pedido, {
     foreignKey: {
@@ -81,5 +81,5 @@ pedido.belongsTo(Cliente, {
     foreignKey: 'id_cliente',
     allowNull: false
 });
-
+*/
 module.exports = pedido;

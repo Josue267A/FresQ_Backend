@@ -11,6 +11,6 @@ const resenia = sequelize.define('resenia',{
         type : DataTypes.INTEGER(1,5)
     }
 });
-resenia.belongsTo(pack,{foreignKey:'id_pack',onDelete:'CASCADE'});
+//resenia.belongsTo(pack,{foreignKey:'id_pack',onDelete:'CASCADE'});
 
 module.exports = resenia;
