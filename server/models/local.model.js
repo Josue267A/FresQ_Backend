@@ -73,21 +73,21 @@ const local = sequelize.define('local',{
             }
         }
     },
-    ruc : {
-        type: DataTypes.CHAR(10),
+    ruc: {
+        type: DataTypes.CHAR(13), // Cambiar temporalmente a 14 para depuración
         allowNull: false,
-        unique :true,
-        validate: {
+        unique: true,
+        /*validate: {
             notNull: { msg: "El RUC es requerido" },
             isNumeric: {
                 args: true,
                 msg: "El RUC solo debe contener números"
             },
             len: {
-                args: [13, 13],
-                msg: "El RUC debe tener exactamente 13 caracteres"
+                args: [13, 14], // Cambiar temporalmente para depuración
+                msg: "El RUC debe tener entre 13 y 14 caracteres"
             }
-        }
+        }*/
     },
     latitud : {
         type: DataTypes.DECIMAL(9, 6),

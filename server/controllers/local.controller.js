@@ -8,8 +8,11 @@ exports.getLocales = async (req, res) => {
     try {
         const locales = await Local.findAll({
             include: [
-                { model: Categoria, as: 'categoria' },
-                { model: Pack, as: 'packs' }
+                {
+                    model: Categoria,
+                    as: 'categoria',
+                    attributes: ['nombre']
+                }
             ]
         });
         res.json(locales);
