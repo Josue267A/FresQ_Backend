@@ -2,7 +2,7 @@ const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
 
 
-const Local = sequelize.define('local',{
+const local = sequelize.define('local',{
     correoElectronico : {
         type : DataTypes.STRING(50),
         allowNull : false,
@@ -139,8 +139,9 @@ const Local = sequelize.define('local',{
 
 });
 //relacion de uno a mucho con categoria
+/*
 local.belongsTo(categoria,{foreignKey: 'id_categoria',onDelete:'CASCADE'});
 categoria.hasMany(local,{foreignKey:'id_categoria'});
 local.hasMany(pack,{foreignKey:'idLocal',onDelete:'CASCADE'});
-
+*/
 module.exports = local;
