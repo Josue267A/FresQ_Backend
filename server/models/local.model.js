@@ -1,8 +1,10 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const categoria = require ('./categoria.model');
+const pack = require ('./pack.model');
 
 
-const Local = sequelize.define('local',{
+const local = sequelize.define('local',{
     correoElectronico : {
         type : DataTypes.STRING(50),
         allowNull : false,

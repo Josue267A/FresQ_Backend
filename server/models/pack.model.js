@@ -1,8 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+//const pack = require ('./pack.model');
+const local = require ('./local.model');
 
-
-const Pack = sequelize.define('pack',{
+const pack = sequelize.define('pack',{
     nombre:{
         type: DataTypes.STRING,
         allowNull: false,
