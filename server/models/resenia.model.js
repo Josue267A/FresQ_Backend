@@ -1,6 +1,6 @@
 const {DataTypes} = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const pack = require('./pack.model');
+//const pack = require('./pack.model');
 
 const resenia = sequelize.define('resenia',{
     comentario : {

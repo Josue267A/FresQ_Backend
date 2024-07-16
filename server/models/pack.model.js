@@ -1,8 +1,8 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const local = require('../models/local.model');
-const reseña = require('./resenia.model');
-const Pedido = require('../models/pedido.model');
+//const local = require('../models/local.model');
+//const reseña = require('./resenia.model');
+const pedido = require('../models/pedido.model');
 
 const pack = sequelize.define('pack',{
     nombre:{
@@ -88,15 +88,5 @@ const pack = sequelize.define('pack',{
         defaultValue : true
     }
 });
-/*pack.belongsTo(local,{foreignKey: 'idLocal', onDelete :'CASCADE'});
-// relacion de uno a muchos con resena
-pack.hasMany(reseña,{foreignKey: 'id_pack',onDelete : 'CASCADE'});
-// Relación uno a muchos con Pedido
-pack.hasMany(Pedido, {
-    foreignKey: {
-        name: 'id_pack',
-        allowNull: false
-    },
-    onDelete: 'CASCADE'
-});*/
+
 module.exports = pack;

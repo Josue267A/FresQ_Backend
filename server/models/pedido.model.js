@@ -1,7 +1,7 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const Pack = require ('../models/pack.model');
-const Cliente = require ('../models/cliente.model');
+//const Pack = require ('../models/pack.model');
+//const Cliente = require ('../models/cliente.model');
 
 const pedido = sequelize.define('pedido',{
     codigo : {

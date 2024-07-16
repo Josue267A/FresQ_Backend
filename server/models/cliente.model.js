@@ -1,6 +1,9 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
-const Pedido = require ('../models/pedido.model')
+
+
+const pedido = require ('../models/pedido.model')
+
 
 const cliente = sequelize.define('cliente',{
     nombre: {
@@ -113,12 +116,5 @@ const cliente = sequelize.define('cliente',{
     }
 });
 
-/*// Relación uno a muchos con Pedido
-cliente.hasMany(Pedido, {
-    foreignKey: {
-        name: 'id_cliente',
-        allowNull: false
-    },
-    onDelete: 'CASCADE'
-});*/
+
 module.exports = cliente;
