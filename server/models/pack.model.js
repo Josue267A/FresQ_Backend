@@ -3,7 +3,8 @@ const sequelize = require('../config/sequelize.config');
 //const pack = require ('./pack.model');
 const local = require ('./local.model');
 
-const pack = sequelize.define('pack',{
+
+const Pack = sequelize.define('pack',{
     nombre:{
         type: DataTypes.STRING,
         allowNull: false,
@@ -87,6 +88,7 @@ const pack = sequelize.define('pack',{
         defaultValue : true
     }
 });
+/*
 pack.belongsTo(local,{foreignKey: 'idLocal', onDelete :'CASCADE'});
 // relacion de uno a muchos con resena
 pack.hasMany(reseña,{foreignKey: 'id_pack',onDelete : 'CASCADE'});
@@ -98,4 +100,5 @@ pack.hasMany(Pedido, {
     },
     onDelete: 'CASCADE'
 });
+*/
 module.exports = pack;
