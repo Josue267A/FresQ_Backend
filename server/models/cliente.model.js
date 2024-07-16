@@ -114,11 +114,11 @@ const cliente = sequelize.define('cliente',{
 });
 
 // Relación uno a muchos con Pedido
-cliente.hasMany(Pedido, {
+/*cliente.hasMany(Pedido, {
     foreignKey: {
         name: 'id_cliente',
         allowNull: false
     },
     onDelete: 'CASCADE'
-});
+});*/
 module.exports = cliente;
