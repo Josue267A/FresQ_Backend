@@ -2,7 +2,7 @@ const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
 
 
-const pedido = require ('../models/pedido.model')
+//const pedido = require ('../models/pedido.model')
 
 
 const cliente = sequelize.define('cliente',{
@@ -114,8 +114,10 @@ const cliente = sequelize.define('cliente',{
             }
         }
     }
+},{timestamps: false // Deshabilita la creación automática de createdAt y updatedAt
+    
 });
-cliente.hasMany(pedido,{foreignKey:'idCliente'});
-pedido.belongsTo(cliente,{foreignKey:'idCliente'});
+//cliente.hasMany(pedido,{foreignKey:'idCliente'});
+//pedido.belongsTo(cliente,{foreignKey:'idCliente'});
 
 module.exports = cliente;

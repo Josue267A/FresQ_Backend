@@ -87,11 +87,13 @@ const pack = sequelize.define('pack',{
         type : DataTypes.BOOLEAN,
         defaultValue : true
     }
+},{timestamps: false // Deshabilita la creación automática de createdAt y updatedAt
+    
 });
 
-pack.hasMany(pedido,{foreignKey:'idPack'});
-pedido.belongsTo(pack,{foreignKey:'idPack'});
+pack.hasMany(pedido,{foreignKey:'idPacks'});
+pedido.belongsTo(pack,{foreignKey:'idPacks'});
 
-pack.hasMany(reseña,{foreignKey:'idPack'});
-reseña.belongsTo(pack,{foreignKey:'idPack'});
+pack.hasMany(reseña,{foreignKey:'idPacks'});
+reseña.belongsTo(pack,{foreignKey:'idPacks'});
 module.exports = pack;

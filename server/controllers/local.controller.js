@@ -4,20 +4,12 @@ const Categoria = require('../models/categoria.model');
 const Pack = require('../models/pack.model');
 
 // Obtener todos los locales
-exports.getLocales = async (req, res) => {
+module.exports.getLocales = async (_, response) => {
     try {
-        const locales = await Local.findAll({
-            include: [
-                {
-                    model: Categoria,
-                    as: 'categoria',
-                    attributes: ['nombre']
-                }
-            ]
-        });
-        res.json(locales);
+        const locales = await Local.findAll();
+        response.json(locales);
     } catch (error) {
-        res.status(500).json({ message: 'Error al obtener los locales', error });
+        response.status(500).json({ message: 'Error al obtener los locales', error });
     }
 };
 
