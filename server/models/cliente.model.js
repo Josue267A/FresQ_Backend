@@ -13,6 +13,20 @@ const cliente = sequelize.define('cliente',{
             notNull : {msg : "El nombre es requerido"}
         }
     },
+    edad : {
+        type : DataTypes.INTEGER,
+        allowNull : false,
+        validate :{ 
+            notNull : {msg : "la edad es requerido"}
+        }
+    },
+    sexo : {
+        type : DataTypes.CHAR(1),
+        allowNull : false,
+        validate :{
+            notNull : {msg : "el genero es requerido"}
+        }
+    },
     correo : {
         type : DataTypes.STRING(50),
         allowNull : false,
@@ -26,6 +40,22 @@ const cliente = sequelize.define('cliente',{
             containsAtSymbolAndDot(value){
                 if(!/^[^@]+@[^@]+\.[^@]+$/.test(value)){
                     throw new Error('El correo electrónico debe contener "@" y un punto.');
+                }
+            }
+        }
+    },contrasenia : {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "La contraseña es requerida" },
+            len: {
+                args: [8, 100],
+                msg: "La contraseña debe tener al menos 8 caracteres"
+            },
+            isStrongPassword(value) {
+                const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+                if (!strongPasswordRegex.test(value)) {
+                    throw new Error('La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial');
                 }
             }
         }
@@ -45,37 +75,9 @@ const cliente = sequelize.define('cliente',{
             }
         }
     },
-    contrasenia : {
-        type: DataTypes.STRING(50),
-        allowNull: false,
-        validate: {
-            notNull: { msg: "La contraseña es requerida" },
-            len: {
-                args: [8, 100],
-                msg: "La contraseña debe tener al menos 8 caracteres"
-            },
-            isStrongPassword(value) {
-                const strongPasswordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-                if (!strongPasswordRegex.test(value)) {
-                    throw new Error('La contraseña debe tener al menos una letra mayúscula, una letra minúscula, un número y un carácter especial');
-                }
-            }
-        }
-    },
-    sexo : {
-        type : DataTypes.CHAR(1),
-        allowNull : false,
-        validate :{
-            notNull : {msg : "el genero es requerido"}
-        }
-    },
-    edad : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-        validate :{ 
-            notNull : {msg : "la edad es requerido"}
-        }
-    },
+    
+    
+    
     latitud : {
         type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
@@ -113,6 +115,9 @@ const cliente = sequelize.define('cliente',{
                 msg: "La longitud debe ser menor o igual a 180"
             }
         }
+    },
+    numPacksSalvadas:{
+        type: DataTypes.INTEGER
     }
 },{timestamps: false // Deshabilita la creación automática de createdAt y updatedAt
     

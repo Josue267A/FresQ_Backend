@@ -1,6 +1,6 @@
 const { Sequelize} = require('sequelize');
 const username = 'root'; //cambiar al nombre de la base de datos 
-const password = '1724256266'; // cambiar a la contrasenia correspondiente
+const password = 'dani'; // cambiar a la contrasenia correspondiente
 const bdd_name = 'FresQ5';
 const hostName = 'localhost';
 

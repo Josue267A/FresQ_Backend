@@ -11,24 +11,14 @@ const pack = sequelize.define('pack',{
         validate: {
             notNull : {msg:"nombre es requerido"}
         }
-    },
-    fechaCreacion:{
-        type: DataTypes.DATEONLY,
-        allowNull : false,
-        validate: {
-            notNull :{msg : "La fecha de creacion es requerido"},
-            isDate: {
-                args: true,
-                msg: "La fecha debe ser válida"
-            }
-        }
-    },
-    precio : {
+    },precio : {
         type: DataTypes.DECIMAL(18,2),
         allowNull :{
             notNull : {msg : "El precio es requerido"}
         }
     },
+    
+
     descripcion : {
         type: DataTypes.STRING,
         allowNull : false,
@@ -58,14 +48,19 @@ const pack = sequelize.define('pack',{
             }
         }
     },
-    multipleDays: {
-        type: DataTypes.BOOLEAN,
-        defaultValue: false
-    },
-    days: {
-        type: DataTypes.INTEGER,
-        defaultValue: 0
-    },
+    /*
+    fechaCreacion:{
+        type: DataTypes.DATEONLY,
+        allowNull : false,
+        validate: {
+            notNull :{msg : "La fecha de creacion es requerido"},
+            isDate: {
+                args: true,
+                msg: "La fecha debe ser válida"
+            }
+        }
+    },*/
+    
     fechaInicio: {
         type: DataTypes.DATEONLY,
         allowNull: false,
@@ -78,7 +73,19 @@ const pack = sequelize.define('pack',{
             
         }
     },
-    //id_local foreanea
+    fechaFin: {
+        type: DataTypes.DATEONLY,
+        allowNull: false,
+        validate :{
+            notNull : {msg : "la fecha de Fin es requerido"},
+            isDate: {
+                args: true,
+                msg: "La fecha debe ser válida"
+            }
+            
+        }
+    },
+    
     estado : {
         type : DataTypes.BOOLEAN,
         defaultValue: true
@@ -86,6 +93,14 @@ const pack = sequelize.define('pack',{
     mostrar : {
         type : DataTypes.BOOLEAN,
         defaultValue : true
+    },
+    multipleDays: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false
+    },
+    days: {
+        type: DataTypes.INTEGER,
+        defaultValue: 0
     }
 },{timestamps: false // Deshabilita la creación automática de createdAt y updatedAt
     
