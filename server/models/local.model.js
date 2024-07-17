@@ -131,11 +131,11 @@ const local = sequelize.define('locale',{
         }
     },
     logo : {
-        type : DataTypes.STRING(100),
+        type : DataTypes.TEXT('long'),
         allowNull: false,
     },
     portada : {
-        type : DataTypes.STRING(100),
+        type : DataTypes.TEXT('long'),
         allowNull: false,
     }
     
