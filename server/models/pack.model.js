@@ -86,7 +86,7 @@ const pack = sequelize.define('pack',{
         }
     },
     
-    estado : {
+    activo : {
         type : DataTypes.BOOLEAN,
         defaultValue: true
     },
