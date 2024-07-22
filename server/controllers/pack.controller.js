@@ -9,10 +9,12 @@ const sequelize = require('../config/sequelize.config');
 exports.getPacks = async (req, res) => {
     const idLocal = req.params.idLocales;
     try {
-        const packs = await sequelize.query('CALL ObtenerPacksPorLocal(:idLocal)',{replacements:{idLocal},
+        const result = await sequelize.query('CALL ObtenerPacksPorLocal(:idLocal)',{replacements:{idLocal},
         type : sequelize.QueryTypes.SELECT
         });
-        res.json(packs);
+         // Verificar si el resultado es un array y extraer el primer elemento si es necesario
+         const packs = Array.isArray(result) && Array.isArray(result[0]) ? result[0] : result;
+        res.json(result[0]);
     } catch (error) {
         res.status(500).json({ message: 'Error al obtener los packs', error });
     }
@@ -53,10 +55,10 @@ exports.createPack = async (req, res) => {
         fechaInicio,
         fechaFin,
         idLocales,
-        activo,
-        mostrar,
+        activo = 1,
+        mostrar = 1,
         multipleDays,
-        days
+        days = 0
     } = req.body;
     try {
         // Convertir valores booleanos a 0 o 1
