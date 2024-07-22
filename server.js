@@ -1,7 +1,7 @@
 const express = require("express"); //se llama a express para poder usarlo
 const cors = require('cors');
 const app = express(); //vamos a construir una app web basada en el framework express la cual sera app
-const port = 5000;
+const port = 3000;
 
 require('../FresQ_Backend/server/config/sequelize.config');
 app.use(cors());

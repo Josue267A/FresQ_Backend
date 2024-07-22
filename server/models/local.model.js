@@ -84,8 +84,8 @@ const local = sequelize.define('locale',{
                 args : true
             },
             len:{ 
-                args : [7,9],
-                msg : "El número telefónico debe tener entre 7 y 9 caracteres"
+                args : [7,10],
+                msg : "El número telefónico debe tener entre 7 y 10 caracteres"
             }
         }
     },
