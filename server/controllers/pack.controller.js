@@ -140,7 +140,7 @@ exports.updatePack = async (req, res) => {
         //res.status(200).json({ message: 'Pack actualizado exitosamente' });
         res.json(packUpdate);
     } catch (error) {
-        res.status(500).json({ message: 'Error al actualizar el pack', error });
+        res.status(500).json({ message: 'Error al actualizar el pack', error: error.message });
     }
 };
 // actualizar estado
@@ -170,9 +170,19 @@ exports.deletePack = async (req,res) =>  {
         if(!pack){
             return res.status(404).json({message:"pack no encontrado"})
         }
-        await Pack.destroy({where:{id:req.params.id}});
-        res.json(pack)
+        pack.mostrar = 0;
+        await pack.save();
+        res.json(  pack );
     }catch(err){
-        res.status(500).json({message:'no vale elminar'})
+        res.status(500).json({message:'no vale elminar',err:err.message})
+    }
+}
+//obtener pack por id
+exports.getPackById = async (req,res) => {
+    try{
+        const pack = await Pack.findOne({where: {id:req.params.id}})
+        res.json(pack);
+    }catch(err){
+        res.status(500).json({message:"No hay el pack"});
     }
 }
