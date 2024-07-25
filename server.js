@@ -10,9 +10,11 @@ app.use(express.urlencoded({ extended: true }));
 const allEnrollmentRoutes = require('../FresQ_Backend/server/routes/local.routes');
 const allCatRoutes = require('./server/routes/categoria.routes');
 const allPackRoutes = require('./server/routes/pack.routes');
+const allPedidoRoutes = require('./server/routes/pedido.route');
 allCatRoutes(app);
 allEnrollmentRoutes(app);
 allPackRoutes(app);
+allPedidoRoutes(app);
 app.listen(port, () => {
 console.log("Server listening at port", port);
 })
