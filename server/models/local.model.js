@@ -6,7 +6,7 @@ const pack = require('../models/pack.model');
 const DEFAULT_LOGO = 'mediafiles/logodefault.jpg';
 const DEFAULT_PORTADA = 'mediafiles/portadadefault.jpg';
 
-const Local = sequelize.define('local', {
+const Local = sequelize.define('locale', {
     numeroCedula: {
         type: DataTypes.CHAR(10),
         allowNull: false,
@@ -51,7 +51,7 @@ const Local = sequelize.define('local', {
         }
     },
     contrasenia: {
-        type: DataTypes.STRING(100),
+        type: DataTypes.TEXT('long'), // Cambia a 100 o más si es necesario
         allowNull: false,
         validate: {
             notNull: { msg: "La contraseña es requerida" },

@@ -3,6 +3,10 @@ const sequelize = require('../config/sequelize.config');
 const Local = require('../models/local.model');
 const multer = require('multer');
 const path = require('path');
+const bcrypt = require('bcryptjs');  // Import bcryptjs
+const crypto = require('crypto');
+const md5 = require('md5');
+
 
 const DEFAULT_LOGO = 'logoDefault.jpg';
 const DEFAULT_PORTADA = 'portadaDefault.jpg';
@@ -100,6 +104,9 @@ exports.createLocal = async (req, res) => {
     portada = portada || DEFAULT_PORTADA;
 
     try {
+        // Hash de la contraseña
+        contrasenia = md5(contrasenia);
+
         // Ejecutar el procedimiento almacenado
         const [results] = await sequelize.query(
             `CALL crearLocales(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
@@ -170,8 +177,8 @@ exports.login = async (req, res) => {
         }
 
         // Verifica la contraseña
-        const isMatch = await bcrypt.compare(contrasenia, local.contrasenia);
-        if (!isMatch) {
+        const hash = md5(contrasenia);
+        if (local.contrasenia !== hash) {
             return res.status(400).json({ message: 'Credenciales incorrectas.' });
         }
 
