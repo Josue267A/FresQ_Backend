@@ -1,64 +1,57 @@
-const {DataTypes, INTEGER} = require('sequelize');
+const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const bcrypt = require('bcryptjs');
 const pack = require('../models/pack.model');
-//const cliente = require('../models/cliente.model')
-const local = sequelize.define('locale',{
-    numeroCedula : {
-        type : DataTypes.CHAR(10),
-        allowNull : false,
-        validate : {
-            notNull : {msg : "El numero de cedula es requerido"},
-            isNumeric : {
-                msg : "El numero de cedula debe ser numerico",
-                args : true
+
+const DEFAULT_LOGO = 'mediafiles/logodefault.jpg';
+const DEFAULT_PORTADA = 'mediafiles/portadadefault.jpg';
+
+const Local = sequelize.define('local', {
+    numeroCedula: {
+        type: DataTypes.CHAR(10),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "El numero de cedula es requerido" },
+            isNumeric: {
+                msg: "El numero de cedula debe ser numerico",
+                args: true
             },
-            len:{ 
-                args : [10],
-                msg : "El número cedula debe tener 10 caracteres"
+            len: {
+                args: [10],
+                msg: "El número cedula debe tener 10 caracteres"
             }
         }
     },
-    nombreLocal : {
-        type : DataTypes.STRING(50),
-        allowNull : false,
-        validate : {
-            notNull :{msg : "El nombre del local es requerido"}
+    nombreLocal: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "El nombre del local es requerido" }
         }
     },
     ruc: {
-        type: DataTypes.CHAR(13), // Cambiar temporalmente a 14 para depuración
+        type: DataTypes.CHAR(13),
         allowNull: false,
         unique: true,
-        /*validate: {
-            notNull: { msg: "El RUC es requerido" },
-            isNumeric: {
-                args: true,
-                msg: "El RUC solo debe contener números"
-            },
-            len: {
-                args: [13, 14], // Cambiar temporalmente para depuración
-                msg: "El RUC debe tener entre 13 y 14 caracteres"
-            }
-        }*/
     },
-    correoElectronico : {
-        type : DataTypes.STRING(50),
-        allowNull : false,
-        validate : {
-            notNull :{msg : "El correo electronico es requerido"},
-            isEmail :{
-                args : true,
-                msg : "El correo electronico no es valido"
+    correoElectronico: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "El correo electronico es requerido" },
+            isEmail: {
+                args: true,
+                msg: "El correo electronico no es valido"
             },
-            containsAtSymbolAndDot(value){
-                if(!/^[^@]+@[^@]+\.[^@]+$/.test(value)){
+            containsAtSymbolAndDot(value) {
+                if (!/^[^@]+@[^@]+\.[^@]+$/.test(value)) {
                     throw new Error('El correo electrónico debe contener "@" y un punto.');
                 }
             }
         }
     },
-    contrasenia : {
-        type: DataTypes.STRING(50),
+    contrasenia: {
+        type: DataTypes.STRING(100),
         allowNull: false,
         validate: {
             notNull: { msg: "La contraseña es requerida" },
@@ -74,25 +67,22 @@ const local = sequelize.define('locale',{
             }
         }
     },
-    numeroTelefono : {
-        type : DataTypes.CHAR(10),
-        allowNull : false,
-        validate : {
-            notNull : {msg : "El numero de telefono es requerido"},
-            isNumeric : {
-                msg : "El numero de telefono debe ser numerico",
-                args : true
+    numeroTelefono: {
+        type: DataTypes.CHAR(10),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "El numero de telefono es requerido" },
+            isNumeric: {
+                msg: "El numero de telefono debe ser numerico",
+                args: true
             },
-            len:{ 
-                args : [7,10],
-                msg : "El número telefónico debe tener entre 7 y 10 caracteres"
+            len: {
+                args: [7, 10],
+                msg: "El número telefónico debe tener entre 7 y 10 caracteres"
             }
         }
     },
-    
-    
-    
-    latitud : {
+    latitud: {
         type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
@@ -111,7 +101,7 @@ const local = sequelize.define('locale',{
             }
         }
     },
-    longitud : {
+    longitud: {
         type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
@@ -130,20 +120,24 @@ const local = sequelize.define('locale',{
             }
         }
     },
-    logo : {
-        type : DataTypes.TEXT('long'),
+    logo: {
+        type: DataTypes.TEXT('long'),
         allowNull: false,
+        defaultValue: DEFAULT_LOGO
     },
-    portada : {
-        type : DataTypes.TEXT('long'),
+    portada: {
+        type: DataTypes.TEXT('long'),
         allowNull: false,
+        defaultValue: DEFAULT_PORTADA
     }
-    
+}, { timestamps: false });
 
-},{timestamps: false // Deshabilita la creación automática de createdAt y updatedAt
-    
+Local.beforeCreate(async (local) => {
+    const salt = await bcrypt.genSalt(10);
+    local.contrasenia = await bcrypt.hash(local.contrasenia, salt);
 });
 
-local.hasMany(pack,{foreignKey:'idLocales'});
-pack.belongsTo(local,{foreignKey:'idLocales'});
-module.exports = local;
+Local.hasMany(pack, { foreignKey: 'idLocales' });
+pack.belongsTo(Local, { foreignKey: 'idLocales' });
+
+module.exports = Local;
