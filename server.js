@@ -12,11 +12,16 @@ app.use(express.urlencoded({ extended: true }));
 const allEnrollmentRoutes = require('../FresQ_Backend/server/routes/local.routes');
 const allCatRoutes = require('./server/routes/categoria.routes');
 const allPackRoutes = require('./server/routes/pack.routes');
+const allPedidoRoutes = require('./server/routes/pedido.route');
 const imageRouter = require('./server/routes/imagen.routes');
+const allClienteRoutes = require ('./server/routes/cliente.route');
 allCatRoutes(app);
 allEnrollmentRoutes(app);
 allPackRoutes(app);
+allPedidoRoutes(app);
+allClienteRoutes(app);
 imageRouter(app);
+
 
 // Configuración para servir archivos estáticos desde mediafiles
 app.use('/mediafiles', express.static(path.join(__dirname, 'mediafiles')));

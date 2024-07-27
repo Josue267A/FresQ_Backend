@@ -4,8 +4,17 @@ const Local = require('../models/local.model');
 const Reseña = require('../models/resenia.model');
 const Pedido = require('../models/pedido.model');
 const sequelize = require('../config/sequelize.config');
+const { response } = require('express');
 
 // Obtener todos los packs
+exports.getAllPacks = async (_,res) => {
+    try {
+        const packs = await Pack.findAll();
+        res.json(packs);
+    } catch (error) {
+        res.status(500).json({message:'No hay registros de packs',error})
+    }
+}
 exports.getPacks = async (req, res) => {
     const idLocal = req.params.idLocales;
     try {
