@@ -7,27 +7,37 @@ const sequelize = require('../config/sequelize.config');
 const { response } = require('express');
 
 // Obtener todos los packs
-exports.getAllPacks = async (_,res) => {
+// Obtener todos los packs
+exports.getAllPacks = async (_, res) => {
     try {
         const packs = await Pack.findAll();
         res.json(packs);
     } catch (error) {
-        res.status(500).json({message:'No hay registros de packs',error})
-    }
-}
-exports.getPacks = async (req, res) => {
-    const idLocal = req.params.idLocales;
-    try {
-        const result = await sequelize.query('CALL ObtenerPacksPorLocal(:idLocal)',{replacements:{idLocal},
-        type : sequelize.QueryTypes.SELECT
-        });
-         // Verificar si el resultado es un array y extraer el primer elemento si es necesario
-         const packs = Array.isArray(result) && Array.isArray(result[0]) ? result[0] : result;
-        res.json(result[0]);
-    } catch (error) {
-        res.status(500).json({ message: 'Error al obtener los packs', error });
+        res.status(500).json({ message: 'No hay registros de packs', error });
     }
 };
+
+exports.getPacks = async (req, res) => {
+    const idLocal = req.params.idLocales;
+  
+    // Verifica que el idLocal coincide con el id en el token
+    if (idLocal != req.user.id) { // Comparar valores como strings
+      return res.status(403).json({ message: 'Acceso denegado. No tiene permisos para acceder a este recurso.' });
+    }
+  
+    try {
+      const result = await sequelize.query('CALL ObtenerPacksPorLocal(:idLocal)', {
+        replacements: { idLocal },
+        type: sequelize.QueryTypes.SELECT
+      });
+      const packs = Array.isArray(result) && Array.isArray(result[0]) ? result[0] : result;
+      res.json(packs);
+    } catch (error) {
+      console.error("Error al obtener los packs:", error);
+      res.status(500).json({ message: 'Error al obtener los packs', error });
+    }
+  };
+  
 
 // Obtener un pack por ID
 exports.getPackById = async (req, res) => {
@@ -54,7 +64,7 @@ exports.createPack = async (req, res) => {
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    //se  obtiene los datos del body que se vana ingresar
+
     const {
         nombre,
         precio,
@@ -69,8 +79,13 @@ exports.createPack = async (req, res) => {
         multipleDays,
         days = 0
     } = req.body;
+
+    // Verificar que el idLocales coincida con el id del token
+    if (idLocales != req.user.id) {
+        return res.status(403).json({ message: 'Acceso denegado. No tienes permiso para crear un pack para este local.' });
+    }
+
     try {
-        // Convertir valores booleanos a 0 o 1
         const activoVal = activo ? 1 : 0;
         const mostrarVal = mostrar ? 1 : 0;
         const multipleDaysVal = multipleDays ? 1 : 0;
@@ -86,22 +101,23 @@ exports.createPack = async (req, res) => {
                     fechaInicio,
                     fechaFin,
                     idLocales,
-                    activo : activoVal,
-                    mostrar : mostrarVal,
-                    multipleDays:multipleDaysVal,
+                    activo: activoVal,
+                    mostrar: mostrarVal,
+                    multipleDays: multipleDaysVal,
                     days
                 }
             }
         );
-        
-        res.status(201).json({message:'Pack creado exitosamente'});
+
+        res.status(201).json({ message: 'Pack creado exitosamente' });
     } catch (error) {
-        console.error('Error al crear el pack:', error); // Esto imprimirá el error en la consola para depuración
+        console.error('Error al crear el pack:', error);
         res.status(500).json({ message: 'Error al crear el pack', error: error.message });
     }
 };
 
 // Editar un pack existente
+// Registrar un nuevo pack
 exports.updatePack = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -121,8 +137,13 @@ exports.updatePack = async (req, res) => {
         multipleDays,
         days
     } = req.body;
+
+    // Verificar que el idLocales coincida con el id del token
+    if (idLocales != req.user.id) {
+        return res.status(403).json({ message: 'Acceso denegado. No tienes permiso para editar un pack para este local.' });
+    }
+
     try {
-        // Convertir valores booleanos a 0 o 1
         const activoVal = activo ? 1 : 0;
         const mostrarVal = mostrar ? 1 : 0;
         const multipleDaysVal = multipleDays ? 1 : 0;
@@ -146,21 +167,33 @@ exports.updatePack = async (req, res) => {
                 }
             }
         );
-        //res.status(200).json({ message: 'Pack actualizado exitosamente' });
         res.json(packUpdate);
     } catch (error) {
         res.status(500).json({ message: 'Error al actualizar el pack', error: error.message });
     }
 };
+
+
 // actualizar estado
-exports.updatePackStatus = async (req,res) => {
+exports.updatePackStatus = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const {id} = req.params;
+    const { id } = req.params;
+
+    // Verificar que el idLocales coincida con el id del token
+    const pack = await sequelize.query('SELECT idLocales FROM packs WHERE id = :idPacks', {
+        replacements: { idPacks: id },
+        type: sequelize.QueryTypes.SELECT
+    });
+
+    if (pack.length === 0 || pack[0].idLocales != req.user.id) {
+        return res.status(403).json({ message: 'Acceso denegado. No tienes permiso para actualizar el estado de este pack.' });
+    }
+
     try {
-        const[result] = await sequelize.query(
+        const [result] = await sequelize.query(
             'CALL actualizarEstadoPacks(:idPacks)',
             {
                 replacements: { idPacks: id }
@@ -168,30 +201,33 @@ exports.updatePackStatus = async (req,res) => {
         );
         res.status(200).json(result);
     } catch (error) {
-        console.error('Error al actualizar el estado del pack:', error); // Esto imprimirá el error en la consola para depuración
+        console.error('Error al actualizar el estado del pack:', error);
         res.status(500).json({ message: 'Error al actualizar el estado del pack', error: error.message });
     }
 };
-//eliminar pack
-exports.deletePack = async (req,res) =>  {
-    try{
-        const pack = await Pack.findOne({where:{id:req.params.id}});
-        if(!pack){
-            return res.status(404).json({message:"pack no encontrado"})
+
+
+// eliminar pack
+exports.deletePack = async (req, res) => {
+    try {
+        const pack = await Pack.findOne({ where: { id: req.params.id } });
+        if (!pack) {
+            return res.status(404).json({ message: "pack no encontrado" });
         }
         pack.mostrar = 0;
         await pack.save();
-        res.json(  pack );
-    }catch(err){
-        res.status(500).json({message:'no vale elminar',err:err.message})
-    }
-}
-//obtener pack por id
-exports.getPackById = async (req,res) => {
-    try{
-        const pack = await Pack.findOne({where: {id:req.params.id}})
         res.json(pack);
-    }catch(err){
-        res.status(500).json({message:"No hay el pack"});
+    } catch (err) {
+        res.status(500).json({ message: 'no vale eliminar', err: err.message });
     }
-}
+};
+
+// obtener pack por id
+exports.getPackById = async (req, res) => {
+    try {
+        const pack = await Pack.findOne({ where: { id: req.params.id } });
+        res.json(pack);
+    } catch (err) {
+        res.status(500).json({ message: "No hay el pack" });
+    }
+};

@@ -1,8 +1,9 @@
 const { validationResult } = require('express-validator');
 const sequelize = require('../config/sequelize.config');
 const Pedido = require('../models/pedido.model');
-// funcion para crear el codigo
+const jwt = require('jsonwebtoken'); // Asegúrate de importar jsonwebtoken
 
+// Función para generar un código único
 function generateUniqueCode() {
     return (
         String.fromCharCode(65 + Math.floor(Math.random() * 26)) +
@@ -11,60 +12,82 @@ function generateUniqueCode() {
         String.fromCharCode(48 + Math.floor(Math.random() * 10))
     );
 }
-exports.getPedidosActivos = async (req,res) => {
+
+// Obtener pedidos activos
+exports.getPedidosActivos = async (req, res) => {
     const idLocal = req.params.idLocales;
-    try{
-        const pedidosActivos = await sequelize.query('CALL obtenerPedidosActivos(:idLocal)',{ replacements:{idLocal},
-            type: sequelize.QueryTypes.SELET
-        });
-        
-        res.json(pedidosActivos);
-    }catch(err){
-        console.error('Error al obtener los pedidos activos');
-        res.status(500).json({message:'Error al obtneer los pedidos activos',error:error.message});
+
+    // Verifica que el idLocal coincide con el id en el token
+    if (idLocal != req.user.id) {
+        return res.status(403).json({ message: 'Acceso denegado. No tiene permisos para acceder a este recurso.' });
+    }
+
+    try {
+        const result = await sequelize.query(
+            'CALL ObtenerPedidosActivos(:idLocal)',
+            {
+                replacements: { idLocal },
+                type: sequelize.QueryTypes.SELECT
+            }
+        );
+
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener los pedidos activos:", error);
+        res.status(500).json({ message: 'Error al obtener los pedidos activos', error });
     }
 };
 
-exports.getPedidosPasados = async(req,res) => {
+// Obtener pedidos pasados
+exports.getPedidosPasados = async (req, res) => {
     const idLocal = req.params.idLocales;
-    try{
-        const pedidosActivos = await sequelize.query('CALL obtenerPedidosPasados(:idLocal)',{ replacements:{idLocal},
-            type: sequelize.QueryTypes.SELET
+
+    try {
+        const pedidosPasados = await sequelize.query('CALL obtenerPedidosPasados(:idLocal)', {
+            replacements: { idLocal },
+            type: sequelize.QueryTypes.SELECT
         });
-        
-        res.json(pedidosActivos);
-    }catch(err){
-        console.error('Error al obtener los pedidos activos');
-        res.status(500).json({message:'Error al obtneer los pedidos activos',error:error.message});
+
+        res.json(pedidosPasados[0]);
+    } catch (err) {
+        console.error('Error al obtener los pedidos pasados:', err);
+        res.status(500).json({ message: 'Error al obtener los pedidos pasados', error: err.message });
     }
-}
-exports.updatePedidoStatus = async (req,res) => {
+};
+
+
+// Actualizar el estado del pedido
+exports.updatePedidoStatus = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
         return res.status(400).json({ errors: errors.array() });
     }
-    const {idPedido} = req.params;
+    const { idPedido } = req.params;
     try {
         const [result] = await sequelize.query(
             'CALL actualizarEstadoPedidos(:idPedido)',
             {
-                replacements:{idPedido:idPedido}
+                replacements: { idPedido }
             }
         );
         res.status(200).json(result);
     } catch (error) {
-        console.error('Error al actualizar el estado del pack:', error); // Esto imprimirá el error en la consola para depuración
+        console.error('Error al actualizar el estado del pack:', error);
         res.status(500).json({ message: 'Error al actualizar el estado del pack', error: error.message });
     }
-}
-exports.getPedido = async(req,res) => {
-    try{
-        const pedido = await Pedido.findOne({where:{id:req.params.idPedido}});
+};
+
+// Obtener un pedido específico
+exports.getPedido = async (req, res) => {
+    try {
+        const pedido = await Pedido.findOne({ where: { id: req.params.idPedido } });
         res.json(pedido);
-    }catch(error){
-        res.status(500).json({message:'No hay pedido'});
+    } catch (error) {
+        res.status(500).json({ message: 'No hay pedido' });
     }
-}
+};
+
+// Crear un nuevo pedido
 exports.createPedido = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -106,10 +129,9 @@ exports.createPedido = async (req, res) => {
             idClientes
         });
 
-        //res.status(201).json({ message: 'Pedido creado exitosamente', pedido: nuevoPedido });
         res.json(nuevoPedido);
     } catch (error) {
-        console.error('Error al crear el pedido:', error); // Esto imprimirá el error en la consola para depuración
+        console.error('Error al crear el pedido:', error);
         res.status(500).json({ message: 'Error al crear el pedido', error: error.message });
     }
 };
