@@ -6,6 +6,7 @@ const path = require('path');
 const bcrypt = require('bcryptjs');  // Import bcryptjs
 const crypto = require('crypto');
 const md5 = require('md5');
+const jwt = require('jsonwebtoken'); // Asegúrate de importar jsonwebtoken
 
 
 const DEFAULT_LOGO = 'logoDefault.jpg';
@@ -41,6 +42,11 @@ exports.updateLocal = async (req, res) => {
         longitud,
         idCategorias
     } = req.body;
+
+    // Cifrar la contraseña utilizando md5
+    if (contrasenia) {
+        contrasenia = md5(contrasenia);
+    }
 
     let logo = req.files.logo ? `${req.files.logo[0].filename}` : undefined;
     let portada = req.files.portada ? `${req.files.portada[0].filename}` : undefined;
@@ -137,61 +143,64 @@ module.exports.getLocales = async (_, response) => {
 // Obtener un local por ID
 exports.getLocalById = async (req, res) => {
     try {
-        // Llamada al procedimiento almacenado para obtener los datos del local
-        const [results] = await sequelize.query(
-            `CALL obtenerLocales(:id)`,
-            {
-                replacements: { id: req.params.id },
-                type: sequelize.QueryTypes.SELECT
-            }
-        );
-
-        if (results.length === 0) {
-            return res.status(404).json({ message: 'Local no encontrado' });
+      const localId = req.user.id; // Usa el id del local desde el token JWT
+  
+      // Llamada al procedimiento almacenado para obtener los datos del local
+      const [results] = await sequelize.query(
+        `CALL obtenerLocales(:id)`,
+        {
+          replacements: { id: localId },
+          type: sequelize.QueryTypes.SELECT
         }
-
-        // Obtener el local desde los resultados
-        const local = results[0];
-
-        // Devolver la respuesta incluyendo el ID del local y el ID de la categoría
-        res.json(local);
+      );
+  
+      if (results.length === 0) {
+        return res.status(404).json({ message: 'Local no encontrado' });
+      }
+  
+      // Obtener el local desde los resultados
+      const local = results[0];
+  
+      // Devolver la respuesta incluyendo el ID del local y el ID de la categoría
+      res.json(local);
     } catch (error) {
-        console.error('Error al obtener el local:', error);
-        res.status(500).json({ message: 'Error al obtener el local', error: error.message });
+      console.error('Error al obtener el local:', error);
+      res.status(500).json({ message: 'Error al obtener el local', error: error.message });
     }
 };
 
 exports.login = async (req, res) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-        return res.status(400).json({ errors: errors.array() });
+      return res.status(400).json({ errors: errors.array() });
     }
-
+  
     const { correoElectronico, contrasenia } = req.body;
-
+  
     try {
-        // Busca el local por correo electrónico
-        const local = await Local.findOne({ where: { correoElectronico } });
-        if (!local) {
-            return res.status(404).json({ message: 'Local no encontrado.' });
-        }
-
-        // Verifica la contraseña
-        const hash = md5(contrasenia);
-        if (local.contrasenia !== hash) {
-            return res.status(400).json({ message: 'Credenciales incorrectas.' });
-        }
-
-        // Genera el token JWT
-        const token = jwt.sign(
-            { id: local.id, nombreLocal: local.nombreLocal }, // Incluye más datos si lo necesitas
-            'tuSecretoJWT', // Reemplaza 'tuSecretoJWT' por tu clave secreta
-            { expiresIn: '1h' }
-        );
-
-        res.json({ token });
+      // Busca el local por correo electrónico
+      const local = await Local.findOne({ where: { correoElectronico } });
+  
+      if (!local) {
+        return res.status(404).json({ message: 'Local no encontrado.' });
+      }
+  
+      // Verifica la contraseña
+      const hashedPassword = md5(contrasenia);
+      if (local.contrasenia !== hashedPassword) {
+        return res.status(400).json({ message: 'Credenciales incorrectas.' });
+      }
+  
+      // Genera el token JWT
+      const token = jwt.sign(
+        { id: local.id, nombreLocal: local.nombreLocal }, // Incluye más datos si lo necesitas
+        'tuSecretoJWT', // Reemplaza 'tuSecretoJWT' por tu clave secreta
+        { expiresIn: '1h' }
+      );
+  
+      return res.json({ token });
     } catch (error) {
-        console.error('Error al iniciar sesión:', error);
-        res.status(500).json({ message: 'Error del servidor', error: error.message });
+      console.error('Error al iniciar sesión:', error);
+      return res.status(500).json({ message: 'Error del servidor', error: error.message });
     }
-};
+  };
