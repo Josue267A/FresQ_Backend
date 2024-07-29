@@ -14,6 +14,12 @@ const authMiddleware = (req, res, next) => {
   try {
     const decoded = jwt.verify(token, 'tuSecretoJWT'); // Reemplaza 'tuSecretoJWT' por tu clave secreta
     req.user = decoded;
+
+    // Permitir el acceso a clientes y locales
+    if (req.params.idCliente && req.params.idCliente != decoded.id) {
+      return res.status(403).json({ message: 'Acceso denegado. No tienes permiso para acceder a este recurso.' });
+    }
+
     next();
   } catch (error) {
     res.status(400).json({ message: 'Token no válido.' });

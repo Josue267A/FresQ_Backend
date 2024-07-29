@@ -131,19 +131,19 @@ exports.createLocal = async (req, res) => {
 };
 
 // Obtener todos los locales
-module.exports.getLocales = async (_, response) => {
+module.exports.getLocales = async (req, res) => {
     try {
         const locales = await Local.findAll();
-        response.json(locales);
+        res.json(locales);
     } catch (error) {
-        response.status(500).json({ message: 'Error al obtener los locales', error });
+        res.status(500).json({ message: 'Error al obtener los locales', error });
     }
 };
 
 // Obtener un local por ID
 exports.getLocalById = async (req, res) => {
     try {
-      const localId = req.user.id; // Usa el id del local desde el token JWT
+      const localId = req.params.id; // Obtiene el id del local desde los parámetros de la URL
   
       // Llamada al procedimiento almacenado para obtener los datos del local
       const [results] = await sequelize.query(
@@ -167,7 +167,9 @@ exports.getLocalById = async (req, res) => {
       console.error('Error al obtener el local:', error);
       res.status(500).json({ message: 'Error al obtener el local', error: error.message });
     }
-};
+  };
+
+
 
 exports.login = async (req, res) => {
     const errors = validationResult(req);

@@ -1,49 +1,47 @@
 const { DataTypes } = require('sequelize');
 const sequelize = require('../config/sequelize.config');
+const crypto = require('crypto');
 
-
-//const pedido = require ('../models/pedido.model')
-
-
-const cliente = sequelize.define('cliente',{
+const cliente = sequelize.define('cliente', {
     nombre: {
         type: DataTypes.STRING(50),
-        allowNull : false,
-        validate : {
-            notNull : {msg : "El nombre es requerido"}
+        allowNull: false,
+        validate: {
+            notNull: { msg: "El nombre es requerido" }
         }
     },
-    edad : {
-        type : DataTypes.INTEGER,
-        allowNull : false,
-        validate :{ 
-            notNull : {msg : "la edad es requerido"}
+    edad: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        validate: {
+            notNull: { msg: "la edad es requerido" }
         }
     },
-    sexo : {
-        type : DataTypes.CHAR(1),
-        allowNull : false,
-        validate :{
-            notNull : {msg : "el genero es requerido"}
+    sexo: {
+        type: DataTypes.CHAR(1),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "el genero es requerido" }
         }
     },
-    correo : {
-        type : DataTypes.STRING(50),
-        allowNull : false,
-        unique:true,
-        validate : {
-            notNull :{msg : "El correo electronico es requerido"},
-            isEmail :{
-                args : true,
-                msg : "El correo electronico no es valido"
+    correo: {
+        type: DataTypes.STRING(50),
+        allowNull: false,
+        unique: true,
+        validate: {
+            notNull: { msg: "El correo electronico es requerido" },
+            isEmail: {
+                args: true,
+                msg: "El correo electronico no es valido"
             },
-            containsAtSymbolAndDot(value){
-                if(!/^[^@]+@[^@]+\.[^@]+$/.test(value)){
+            containsAtSymbolAndDot(value) {
+                if (!/^[^@]+@[^@]+\.[^@]+$/.test(value)) {
                     throw new Error('El correo electrónico debe contener "@" y un punto.');
                 }
             }
         }
-    },contrasenia : {
+    },
+    contrasenia: {
         type: DataTypes.STRING(50),
         allowNull: false,
         validate: {
@@ -60,25 +58,22 @@ const cliente = sequelize.define('cliente',{
             }
         }
     },
-    telefono : {
-        type : DataTypes.CHAR(10),
-        allowNull : false,
-        validate : {
-            notNull : {msg : "El numero de telefono es requerido"},
-            isNumeric : {
-                msg : "El numero de telefono debe ser numerico",
-                args : true
+    telefono: {
+        type: DataTypes.CHAR(10),
+        allowNull: false,
+        validate: {
+            notNull: { msg: "El numero de telefono es requerido" },
+            isNumeric: {
+                msg: "El numero de telefono debe ser numerico",
+                args: true
             },
-            len:{ 
-                args : [7,9],
-                msg : "El número telefónico debe tener entre 7 y 9 caracteres"
+            len: {
+                args: [7, 10],
+                msg: "El número telefónico debe tener entre 7 y 10 caracteres"
             }
         }
     },
-    
-    
-    
-    latitud : {
+    latitud: {
         type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
@@ -97,7 +92,7 @@ const cliente = sequelize.define('cliente',{
             }
         }
     },
-    longitud : {
+    longitud: {
         type: DataTypes.DECIMAL(9, 6),
         allowNull: false,
         validate: {
@@ -116,13 +111,21 @@ const cliente = sequelize.define('cliente',{
             }
         }
     },
-    numPacksSalvadas:{
+    numPacksSalvadas: {
         type: DataTypes.INTEGER
     }
-},{timestamps: false // Deshabilita la creación automática de createdAt y updatedAt
-    
+}, {
+    timestamps: false, // Deshabilita la creación automática de createdAt y updatedAt
+    hooks: {
+        beforeCreate: (cliente) => {
+            cliente.contrasenia = crypto.createHash('md5').update(cliente.contrasenia).digest('hex');
+        },
+        beforeUpdate: (cliente) => {
+            if (cliente.changed('contrasenia')) {
+                cliente.contrasenia = crypto.createHash('md5').update(cliente.contrasenia).digest('hex');
+            }
+        }
+    }
 });
-//cliente.hasMany(pedido,{foreignKey:'idCliente'});
-//pedido.belongsTo(cliente,{foreignKey:'idCliente'});
 
 module.exports = cliente;
