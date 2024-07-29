@@ -20,6 +20,11 @@ const authMiddleware = (req, res, next) => {
       return res.status(403).json({ message: 'Acceso denegado. No tienes permiso para acceder a este recurso.' });
     }
 
+    // Verificar que el local solo accede a sus propios recursos
+    if (req.params.idLocal && req.params.idLocal != decoded.id) {
+      return res.status(403).json({ message: 'Acceso denegado. No tienes permiso para acceder a los recursos de otro local.' });
+    }
+
     next();
   } catch (error) {
     res.status(400).json({ message: 'Token no válido.' });

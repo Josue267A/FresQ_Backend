@@ -145,6 +145,11 @@ exports.getLocalById = async (req, res) => {
     try {
       const localId = req.params.id; // Obtiene el id del local desde los parámetros de la URL
   
+      // Verificar que el usuario autenticado es el propietario del recurso solicitado
+      if (req.user.role === 'local' && localId != req.user.id) {
+        return res.status(403).json({ message: 'Acceso denegado. No tienes permiso para acceder a los recursos de otro local.' });
+      }
+  
       // Llamada al procedimiento almacenado para obtener los datos del local
       const [results] = await sequelize.query(
         `CALL obtenerLocales(:id)`,
@@ -168,7 +173,7 @@ exports.getLocalById = async (req, res) => {
       res.status(500).json({ message: 'Error al obtener el local', error: error.message });
     }
   };
-
+  
 
 
 exports.login = async (req, res) => {
