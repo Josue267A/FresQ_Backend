@@ -13,6 +13,46 @@ function generateUniqueCode() {
     );
 }
 
+// Obtener pedidos activos del cliente
+exports.getPedidosActivosCliente = async (req, res) => {
+    const idCliente = req.params.idCliente;
+
+    try {
+        const result = await sequelize.query(
+            'CALL obtenerPedidosActivosCliente(:idCliente)',
+            {
+                replacements: { idCliente },
+                type: sequelize.QueryTypes.SELECT
+            }
+        );
+
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener los pedidos activos del cliente:", error);
+        res.status(500).json({ message: 'Error al obtener los pedidos activos del cliente', error });
+    }
+};
+
+// Obtener pedidos pasados del cliente
+exports.getPedidosPasadosCliente = async (req, res) => {
+    const idCliente = req.params.idCliente;
+
+    try {
+        const result = await sequelize.query(
+            'CALL ObtenerPedidosPasadosCliente(:idCliente)',
+            {
+                replacements: { idCliente },
+                type: sequelize.QueryTypes.SELECT
+            }
+        );
+
+        res.json(result);
+    } catch (error) {
+        console.error("Error al obtener los pedidos pasados del cliente:", error);
+        res.status(500).json({ message: 'Error al obtener los pedidos pasados del cliente', error });
+    }
+};
+
 // Obtener pedidos activos
 exports.getPedidosActivos = async (req, res) => {
     const idLocal = req.params.idLocales;
@@ -54,7 +94,6 @@ exports.getPedidosPasados = async (req, res) => {
         res.status(500).json({ message: 'Error al obtener los pedidos pasados', error: err.message });
     }
 };
-
 
 // Actualizar el estado del pedido
 exports.updatePedidoStatus = async (req, res) => {
