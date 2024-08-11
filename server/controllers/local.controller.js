@@ -140,6 +140,38 @@ module.exports.getLocales = async (req, res) => {
     }
 };
 
+module.exports.getLocalesConPacksProxFinalizar = async(req, res) => {
+  try {
+    const result = await sequelize.query(
+        'SELECT * FROM localesConPacksProximosAFinalizar',
+        {
+            type: sequelize.QueryTypes.SELECT
+        }
+    );
+
+    res.json(result);
+} catch (error) {
+    console.error("Error al obtener los locales con packs próximos a finalizar:", error);
+    res.status(500).json({ message: 'Error al obtener los locales con packs próximos a finalizar', error });
+}
+}
+
+module.exports.getLocalConPacksNuevos = async(req,res) => {
+  try {
+    const result = await sequelize.query(
+        'SELECT * FROM localesConPacksNuevos',
+        {
+            type: sequelize.QueryTypes.SELECT
+        }
+    );
+
+    res.json(result);
+} catch (error) {
+    console.error("Error al obtener los locales con packs nuevos:", error);
+    res.status(500).json({ message: 'Error al obtener los locales con packs nuevos', error });
+}
+}
+
 // Obtener un local por ID
 exports.getLocalById = async (req, res) => {
     try {
